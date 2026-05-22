@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Flight Management System
+
+Flight Management System is a production-style web application built for the internship technical assignment. The app will support flight search, booking, interactive seat selection, rescheduling, cancellations, Supabase-backed persistence, and an installable PWA experience.
+
+## Tech Stack
+
+- Next.js 16 App Router
+- React 19
+- TypeScript
+- Tailwind CSS v4
+- Supabase Auth, Postgres, Realtime, RLS, and RPC functions
+- Zustand with `persist` middleware
+- Zod for validation
+- lucide-react for interface icons
+
+## Current Status
+
+The project foundation is in place:
+
+- App metadata and shell
+- Responsive foundation surface
+- Supabase workspace folders
+- Environment variable contract
+- Offline-safe system font stack for reproducible builds
+
+Feature implementation will be delivered step by step with focused commits.
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
+
+```bash
+npm install
+```
+
+Create a local environment file:
+
+```bash
+cp .env.example .env.local
+```
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+```
 
-## Learn More
+Only `NEXT_PUBLIC_*` values are safe to expose to the browser. The service role key is server-only and must never be shipped to client components.
 
-To learn more about Next.js, take a look at the following resources:
+## Development Commands
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run dev
+npm run lint
+npm run build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Architecture Notes
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/app` contains App Router pages, layouts, and global CSS.
+- `src/components` contains reusable UI building blocks.
+- `src/lib` contains application constants and shared helpers.
+- `supabase/migrations` will contain schema, RLS, trigger, and RPC SQL.
+- `supabase/seed` will contain repeatable seed data.
