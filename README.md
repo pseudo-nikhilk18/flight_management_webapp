@@ -19,7 +19,20 @@ Flight Management System is a production-style web application built for the int
 - Database migration SQL (`supabase/migrations/001_initial_schema.sql`)
 - Seed SQL (`supabase/seed/seed.sql`) — apply in Supabase after migration
 
-Next: Supabase Auth wiring, then Task 01 (search and booking flow).
+- Supabase Auth (login, register, session middleware, protected `/bookings`)
+
+Next: Task 01 (search and booking flow).
+
+## Demo Test Account
+
+For local development and reviewer QA, create (or use) this Supabase Auth user:
+
+| Field | Value |
+|-------|-------|
+| Email | `passenger@flightdemo.test` |
+| Password | `passenger123` |
+
+This is a **demo-only** credential for the assignment seed environment — not for production. Enable **Auto Confirm User** in Supabase when creating the account.
 
 ## Supabase Setup
 
@@ -27,8 +40,7 @@ See [`supabase/README.md`](./supabase/README.md) for step-by-step instructions.
 
 1. Run `migrations/001_initial_schema.sql` in the Supabase SQL Editor.
 2. Run `seed/seed.sql`.
-3. Create a test user under **Authentication → Users** (auto-confirm for local dev).
-4. Document test credentials in this README before submission.
+3. Create the demo test user under **Authentication → Users** (see table above, auto-confirm for local dev).
 
 ## Getting Started
 
@@ -75,6 +87,9 @@ npm run build
 
 - `src/app` contains App Router pages, layouts, and global CSS.
 - `src/components` contains reusable UI building blocks.
-- `src/lib` contains application constants and shared helpers.
-- `supabase/migrations` will contain schema, RLS, trigger, and RPC SQL.
-- `supabase/seed` will contain repeatable seed data.
+- `src/lib/supabase` contains browser/server Supabase clients and session middleware helpers.
+- `src/lib/validations` contains Zod schemas.
+- `src/types` contains shared TypeScript domain types.
+- `middleware.ts` refreshes Supabase sessions and guards protected routes.
+- `supabase/migrations` contains schema, RLS, trigger, and RPC SQL.
+- `supabase/seed` contains repeatable seed data.

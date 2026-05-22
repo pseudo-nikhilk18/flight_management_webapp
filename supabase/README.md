@@ -27,9 +27,9 @@ Database assets for the Flight Management assignment.
 Seed SQL does **not** create Auth users (Supabase manages `auth.users` separately).
 
 1. Dashboard → **Authentication** → **Users** → **Add user**.
-2. Suggested demo account (document your real password in README when ready):
+2. Demo account (also documented in project README):
    - Email: `passenger@flightdemo.test`
-   - Password: choose a strong password you will share in README for reviewers
+   - Password: `passenger123`
 3. Enable **Auto Confirm User** so email verification is not required locally.
 
 ## Verify RPCs (optional)
