@@ -15,15 +15,20 @@ Flight Management System is a production-style web application built for the int
 
 ## Current Status
 
-The project foundation is in place:
+- App foundation (shell, dependencies, env contract)
+- Database migration SQL (`supabase/migrations/001_initial_schema.sql`)
+- Seed SQL (`supabase/seed/seed.sql`) — apply in Supabase after migration
 
-- App metadata and shell
-- Responsive foundation surface
-- Supabase workspace folders
-- Environment variable contract
-- Offline-safe system font stack for reproducible builds
+Next: Supabase Auth wiring, then Task 01 (search and booking flow).
 
-Feature implementation will be delivered step by step with focused commits.
+## Supabase Setup
+
+See [`supabase/README.md`](./supabase/README.md) for step-by-step instructions.
+
+1. Run `migrations/001_initial_schema.sql` in the Supabase SQL Editor.
+2. Run `seed/seed.sql`.
+3. Create a test user under **Authentication → Users** (auto-confirm for local dev).
+4. Document test credentials in this README before submission.
 
 ## Getting Started
 
