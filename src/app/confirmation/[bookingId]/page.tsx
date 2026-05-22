@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CheckCircle2, Download, Ticket } from "lucide-react";
+import { CheckCircle2, Ticket } from "lucide-react";
 
 import { AppHeader } from "@/components/app-header";
+import { PageContainer } from "@/components/layout/page-container";
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
+import { Card, CardBody } from "@/components/ui/card";
 import { requireUser } from "@/lib/auth/session";
 import { getAirportLabel } from "@/lib/flights/constants";
 import {
@@ -96,138 +97,147 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
   return (
     <>
       <AppHeader />
-      <main className="flex-1 pb-16">
-        <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 py-12 text-white">
-          <div className="mx-auto max-w-4xl px-4 text-center sm:px-6">
-            <span className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-white/15 backdrop-blur">
-              <CheckCircle2 aria-hidden="true" size={34} />
+      <main className="flex-1 pb-20">
+        <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 py-14 text-white sm:py-16">
+          <PageContainer width="md" className="text-center">
+            <span className="mx-auto flex size-20 items-center justify-center rounded-3xl bg-white/15 backdrop-blur">
+              <CheckCircle2 aria-hidden="true" size={40} />
             </span>
-            <h1 className="mt-5 text-3xl font-bold tracking-tight">
+            <h1 className="mt-6 text-3xl font-bold tracking-tight sm:text-4xl">
               Booking confirmed
             </h1>
-            <p className="mt-2 text-blue-100">
+            <p className="mt-3 text-base leading-relaxed text-blue-100">
               Your itinerary is reserved. Save your PNR for check-in.
             </p>
-            <p className="mt-6 text-4xl font-black tracking-widest">{booking.pnr_code}</p>
-            <p className="mt-1 text-sm uppercase tracking-[0.2em] text-blue-100">
+            <p className="mt-8 text-5xl font-black tracking-[0.2em]">{booking.pnr_code}</p>
+            <p className="mt-2 text-xs font-bold uppercase tracking-[0.25em] text-blue-200">
               PNR code
             </p>
-          </div>
+          </PageContainer>
         </section>
 
-        <section className="mx-auto -mt-8 max-w-4xl space-y-4 px-4 sm:px-6">
-          <Card className="p-6">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Flight
-                </p>
-                <h2 className="mt-1 text-xl font-bold text-slate-950">
-                  {flight
-                    ? `${getAirportLabel(flight.origin)} → ${getAirportLabel(flight.destination)}`
-                    : "—"}
-                </h2>
-                <p className="mt-1 text-sm text-slate-600">
-                  {flight?.flight_no} · {flight?.aircraft_type}
-                </p>
-              </div>
-              <Badge variant="confirmed">{booking.status}</Badge>
+        <section className="py-10 sm:py-12">
+          <PageContainer width="md" className="space-y-6">
+            <Card>
+              <CardBody>
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="space-y-2">
+                    <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                      Flight
+                    </p>
+                    <h2 className="text-2xl font-bold text-slate-950">
+                      {flight
+                        ? `${getAirportLabel(flight.origin)} → ${getAirportLabel(flight.destination)}`
+                        : "—"}
+                    </h2>
+                    <p className="text-sm text-slate-600">
+                      {flight?.flight_no} · {flight?.aircraft_type}
+                    </p>
+                  </div>
+                  <Badge variant="confirmed">{booking.status}</Badge>
+                </div>
+
+                {flight ? (
+                  <div className="mt-6 grid gap-4 rounded-2xl bg-slate-50 p-5 text-sm sm:grid-cols-3">
+                    <div className="space-y-1">
+                      <p className="text-slate-500">Departure</p>
+                      <p className="text-lg font-bold text-slate-900">
+                        {formatTime(flight.departs_at)}
+                      </p>
+                      <p className="text-slate-600">{formatDateTime(flight.departs_at)}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-slate-500">Duration</p>
+                      <p className="text-lg font-bold text-slate-900">
+                        {formatDuration(flight.departs_at, flight.arrives_at)}
+                      </p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-slate-500">Arrival</p>
+                      <p className="text-lg font-bold text-slate-900">
+                        {formatTime(flight.arrives_at)}
+                      </p>
+                      <p className="text-slate-600">{formatDateTime(flight.arrives_at)}</p>
+                    </div>
+                  </div>
+                ) : null}
+              </CardBody>
+            </Card>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              <Card>
+                <CardBody>
+                  <div className="flex items-center gap-3">
+                    <Ticket aria-hidden="true" className="text-blue-600" size={20} />
+                    <h3 className="text-lg font-bold text-slate-900">Seat assignment</h3>
+                  </div>
+                  <p className="mt-4 text-3xl font-bold text-slate-950">
+                    {seat?.seat_number ?? "—"}
+                  </p>
+                  <p className="mt-2 text-sm capitalize text-slate-600">
+                    {seat?.class ?? "Not assigned"}
+                  </p>
+                </CardBody>
+              </Card>
+
+              <Card>
+                <CardBody>
+                  <h3 className="text-lg font-bold text-slate-900">Fare paid</h3>
+                  <p className="mt-4 text-3xl font-bold text-slate-950">
+                    {formatPrice(booking.total_price)}
+                  </p>
+                  <p className="mt-2 text-sm text-slate-600">
+                    Booked {formatDateTime(booking.booked_at)}
+                  </p>
+                </CardBody>
+              </Card>
             </div>
 
-            {flight ? (
-              <div className="mt-5 grid gap-3 rounded-xl bg-slate-50 p-4 text-sm sm:grid-cols-3">
-                <div>
-                  <p className="text-slate-500">Departure</p>
-                  <p className="font-semibold text-slate-900">
-                    {formatTime(flight.departs_at)}
-                  </p>
-                  <p className="text-slate-600">{formatDateTime(flight.departs_at)}</p>
-                </div>
-                <div>
-                  <p className="text-slate-500">Duration</p>
-                  <p className="font-semibold text-slate-900">
-                    {formatDuration(flight.departs_at, flight.arrives_at)}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-slate-500">Arrival</p>
-                  <p className="font-semibold text-slate-900">
-                    {formatTime(flight.arrives_at)}
-                  </p>
-                  <p className="text-slate-600">{formatDateTime(flight.arrives_at)}</p>
-                </div>
-              </div>
+            {passenger ? (
+              <Card>
+                <CardBody>
+                  <h3 className="text-lg font-bold text-slate-900">Passenger</h3>
+                  <dl className="mt-5 grid gap-5 text-sm sm:grid-cols-2">
+                    <div className="space-y-1">
+                      <dt className="text-slate-500">Name</dt>
+                      <dd className="font-semibold text-slate-900">{passenger.full_name}</dd>
+                    </div>
+                    <div className="space-y-1">
+                      <dt className="text-slate-500">Passport</dt>
+                      <dd className="font-semibold text-slate-900">
+                        {passenger.passport_no}
+                      </dd>
+                    </div>
+                    <div className="space-y-1">
+                      <dt className="text-slate-500">Nationality</dt>
+                      <dd className="font-semibold text-slate-900">
+                        {passenger.nationality}
+                      </dd>
+                    </div>
+                    <div className="space-y-1">
+                      <dt className="text-slate-500">Date of birth</dt>
+                      <dd className="font-semibold text-slate-900">{passenger.dob}</dd>
+                    </div>
+                  </dl>
+                </CardBody>
+              </Card>
             ) : null}
-          </Card>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card className="p-5">
-              <div className="flex items-center gap-2 text-slate-900">
-                <Ticket aria-hidden="true" className="text-blue-600" size={18} />
-                <h3 className="font-semibold">Seat assignment</h3>
-              </div>
-              <p className="mt-3 text-2xl font-bold text-slate-950">
-                {seat?.seat_number ?? "—"}
-              </p>
-              <p className="mt-1 text-sm capitalize text-slate-600">
-                {seat?.class ?? "Not assigned"}
-              </p>
-            </Card>
-
-            <Card className="p-5">
-              <h3 className="font-semibold text-slate-900">Fare paid</h3>
-              <p className="mt-3 text-2xl font-bold text-slate-950">
-                {formatPrice(booking.total_price)}
-              </p>
-              <p className="mt-1 text-sm text-slate-600">
-                Booked {formatDateTime(booking.booked_at)}
-              </p>
-            </Card>
-          </div>
-
-          {passenger ? (
-            <Card className="p-5">
-              <h3 className="font-semibold text-slate-900">Passenger</h3>
-              <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
-                <div>
-                  <dt className="text-slate-500">Name</dt>
-                  <dd className="font-medium text-slate-900">{passenger.full_name}</dd>
-                </div>
-                <div>
-                  <dt className="text-slate-500">Passport</dt>
-                  <dd className="font-medium text-slate-900">
-                    {passenger.passport_no}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-slate-500">Nationality</dt>
-                  <dd className="font-medium text-slate-900">
-                    {passenger.nationality}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-slate-500">Date of birth</dt>
-                  <dd className="font-medium text-slate-900">{passenger.dob}</dd>
-                </div>
-              </dl>
-            </Card>
-          ) : null}
-
-          <div className="flex flex-wrap gap-3 pt-2">
-            <Link
-              className="inline-flex h-11 items-center gap-2 rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white hover:bg-blue-700"
-              href="/bookings"
-            >
-              <Download aria-hidden="true" size={16} />
-              View my bookings
-            </Link>
-            <Link
-              className="inline-flex h-11 items-center rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
-              href="/"
-            >
-              Book another flight
-            </Link>
-          </div>
+            <div className="flex flex-wrap gap-4 pt-2">
+              <Link
+                className="inline-flex min-h-12 min-w-[200px] items-center justify-center rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(37,99,235,0.32)] hover:bg-blue-700"
+                href="/bookings"
+              >
+                View my bookings
+              </Link>
+              <Link
+                className="inline-flex min-h-12 items-center rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-50"
+                href="/"
+              >
+                Book another flight
+              </Link>
+            </div>
+          </PageContainer>
         </section>
       </main>
     </>

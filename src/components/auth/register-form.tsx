@@ -5,9 +5,7 @@ import { useActionState } from "react";
 
 import { registerAction, type AuthActionState } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
-
-const inputClassName =
-  "h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 shadow-sm transition-colors placeholder:text-slate-400 focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-600/20";
+import { Field, fieldControlClassName } from "@/components/ui/field";
 
 const initialState: AuthActionState | null = null;
 
@@ -18,29 +16,23 @@ export function RegisterForm() {
   );
 
   return (
-    <form action={formAction} className="space-y-4">
-      <div className="space-y-1.5">
-        <label className="text-sm font-medium text-slate-700" htmlFor="email">
-          Email
-        </label>
+    <form action={formAction} className="space-y-6">
+      <Field htmlFor="email" label="Email">
         <input
           autoComplete="email"
-          className={inputClassName}
+          className={fieldControlClassName}
           id="email"
           name="email"
           placeholder="you@example.com"
           required
           type="email"
         />
-      </div>
+      </Field>
 
-      <div className="space-y-1.5">
-        <label className="text-sm font-medium text-slate-700" htmlFor="password">
-          Password
-        </label>
+      <Field htmlFor="password" label="Password">
         <input
           autoComplete="new-password"
-          className={inputClassName}
+          className={fieldControlClassName}
           id="password"
           minLength={6}
           name="password"
@@ -48,10 +40,13 @@ export function RegisterForm() {
           required
           type="password"
         />
-      </div>
+      </Field>
 
       {state?.error ? (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700" role="alert">
+        <p
+          className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-relaxed text-red-700"
+          role="alert"
+        >
           {state.error}
         </p>
       ) : null}
@@ -60,7 +55,7 @@ export function RegisterForm() {
         {isPending ? "Creating account..." : "Create account"}
       </Button>
 
-      <p className="text-center text-sm text-slate-600">
+      <p className="text-center text-sm leading-relaxed text-slate-600">
         Already have an account?{" "}
         <Link className="font-semibold text-blue-600 hover:underline" href="/login">
           Sign in

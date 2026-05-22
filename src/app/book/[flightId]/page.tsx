@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 
 import { BookingForm } from "@/components/booking/booking-form";
 import { AppHeader } from "@/components/app-header";
-import { Card } from "@/components/ui/card";
+import { Card, CardBody } from "@/components/ui/card";
 import { requireUser } from "@/lib/auth/session";
 import { getAirportLabel } from "@/lib/flights/constants";
 import {
@@ -13,7 +13,8 @@ import {
   formatPrice,
   formatTime,
 } from "@/lib/flights/format";
-import { getAvailableSeats, getFlightById } from "@/lib/flights/queries";
+import { PageContainer } from "@/components/layout/page-container";
+import { getFlightById, getFlightSeats } from "@/lib/flights/queries";
 
 type BookPageProps = {
   params: Promise<{ flightId: string }>;
@@ -35,13 +36,16 @@ export default async function BookPage({ params, searchParams }: BookPageProps) 
     notFound();
   }
 
-  const seats = await getAvailableSeats(flightId);
-  if (!seats.length) {
+  const seats = await getFlightSeats(flightId);
+  const availableSeats = seats.filter((seat) => seat.is_available);
+  if (!availableSeats.length) {
     return (
       <>
         <AppHeader />
-        <main className="mx-auto max-w-3xl px-4 py-10">
-          <Card className="p-8 text-center">
+        <main className="py-12">
+          <PageContainer width="md">
+          <Card>
+          <CardBody className="text-center">
             <h1 className="text-xl font-semibold text-slate-950">
               No seats available
             </h1>
@@ -54,7 +58,9 @@ export default async function BookPage({ params, searchParams }: BookPageProps) 
             >
               Back to search
             </Link>
+          </CardBody>
           </Card>
+          </PageContainer>
         </main>
       </>
     );
@@ -63,36 +69,42 @@ export default async function BookPage({ params, searchParams }: BookPageProps) 
   return (
     <>
       <AppHeader />
-      <main className="flex-1 pb-16">
+      <main className="flex-1 pb-20">
         <section className="border-b border-slate-200 bg-gradient-to-r from-slate-900 to-blue-950 text-white">
-          <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+          <PageContainer className="py-10 sm:py-12">
             <Link
-              className="mb-4 inline-flex items-center gap-1 text-sm text-blue-100 hover:text-white"
+              className="mb-6 inline-flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-blue-100 transition-colors hover:bg-white/10 hover:text-white"
               href="/results"
             >
               <ArrowLeft aria-hidden="true" size={16} />
               Back to results
             </Link>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-200">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-200">
               Complete booking
             </p>
-            <h1 className="mt-2 text-2xl font-bold sm:text-3xl">
+            <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
               {flight.flight_no} · {getAirportLabel(flight.origin)} to{" "}
               {getAirportLabel(flight.destination)}
             </h1>
-            <div className="mt-4 flex flex-wrap gap-4 text-sm text-blue-100">
-              <span>{formatDateTime(flight.departs_at)}</span>
-              <span>
-                {formatTime(flight.departs_at)} – {formatTime(flight.arrives_at)} (
-                {formatDuration(flight.departs_at, flight.arrives_at)})
+            <div className="mt-5 flex flex-wrap gap-3">
+              <span className="rounded-full bg-white/10 px-4 py-2 text-sm text-blue-50 ring-1 ring-white/15">
+                {formatDateTime(flight.departs_at)}
               </span>
-              <span>From {formatPrice(Number(flight.base_price))}</span>
+              <span className="rounded-full bg-white/10 px-4 py-2 text-sm text-blue-50 ring-1 ring-white/15">
+                {formatTime(flight.departs_at)} – {formatTime(flight.arrives_at)} ·{" "}
+                {formatDuration(flight.departs_at, flight.arrives_at)}
+              </span>
+              <span className="rounded-full bg-white/10 px-4 py-2 text-sm text-blue-50 ring-1 ring-white/15">
+                From {formatPrice(Number(flight.base_price))}
+              </span>
             </div>
-          </div>
+          </PageContainer>
         </section>
 
-        <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-          <BookingForm flight={flight} passengers={passengers} seats={seats} />
+        <section className="py-10 sm:py-12">
+          <PageContainer>
+            <BookingForm flight={flight} passengers={passengers} seats={seats} />
+          </PageContainer>
         </section>
       </main>
     </>

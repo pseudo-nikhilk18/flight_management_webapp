@@ -92,13 +92,17 @@ export async function getFlightById(flightId: string) {
 }
 
 export async function getAvailableSeats(flightId: string) {
+  const seats = await getFlightSeats(flightId);
+  return seats.filter((seat) => seat.is_available);
+}
+
+export async function getFlightSeats(flightId: string) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("seats")
     .select("*")
     .eq("flight_id", flightId)
-    .eq("is_available", true)
     .order("seat_number", { ascending: true });
 
   if (error) {

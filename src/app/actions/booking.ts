@@ -19,12 +19,18 @@ export async function createBookingAction(
     return { error: "Please sign in to complete your booking" };
   }
 
+  const seatId = formData.get("seatId")?.toString() ?? "";
+
+  if (!seatId) {
+    return { error: "Please select a seat before confirming" };
+  }
+
   const parsed = passengerSchema.safeParse({
     fullName: formData.get("fullName"),
     passportNo: formData.get("passportNo"),
     nationality: formData.get("nationality"),
     dob: formData.get("dob"),
-    seatId: formData.get("seatId"),
+    seatId,
   });
 
   if (!parsed.success) {

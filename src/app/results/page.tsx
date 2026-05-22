@@ -4,7 +4,9 @@ import { ArrowLeft, PlaneTakeoff } from "lucide-react";
 import { AppHeader } from "@/components/app-header";
 import { FlightCard } from "@/components/flights/flight-card";
 import { SearchForm } from "@/components/flights/search-form";
-import { Card } from "@/components/ui/card";
+import { PageContainer } from "@/components/layout/page-container";
+import { SectionHeader } from "@/components/layout/section-header";
+import { Card, CardBody } from "@/components/ui/card";
 import { getAirportLabel } from "@/lib/flights/constants";
 import { searchFlights } from "@/lib/flights/queries";
 import { searchSchema } from "@/lib/validations/search";
@@ -33,11 +35,11 @@ export default async function ResultsPage({ searchParams }: ResultsPageProps) {
   return (
     <>
       <AppHeader />
-      <main className="flex-1 pb-16">
-        <section className="border-b border-slate-200 bg-white">
-          <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+      <main className="flex-1 pb-20">
+        <section className="border-b border-slate-200 bg-white py-8 sm:py-10">
+          <PageContainer>
             <Link
-              className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-slate-900"
+              className="mb-6 inline-flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
               href="/"
             >
               <ArrowLeft aria-hidden="true" size={16} />
@@ -55,19 +57,23 @@ export default async function ResultsPage({ searchParams }: ResultsPageProps) {
                   : undefined
               }
             />
-          </div>
+          </PageContainer>
         </section>
 
-        <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-          {!parsed.success ? (
-            <Card className="p-8 text-center">
-              <p className="text-sm text-red-600">
-                {parsed.error.issues[0]?.message ?? "Invalid search parameters"}
-              </p>
-            </Card>
-          ) : (
-            <ResultsList query={parsed.data} />
-          )}
+        <section className="py-10 sm:py-12">
+          <PageContainer>
+            {!parsed.success ? (
+              <Card>
+                <CardBody className="text-center">
+                  <p className="text-sm text-red-600">
+                    {parsed.error.issues[0]?.message ?? "Invalid search parameters"}
+                  </p>
+                </CardBody>
+              </Card>
+            ) : (
+              <ResultsList query={parsed.data} />
+            )}
+          </PageContainer>
         </section>
       </main>
     </>
@@ -88,45 +94,40 @@ async function ResultsList({
 
   return (
     <>
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">
-            Search results
-          </p>
-          <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
-            {getAirportLabel(query.origin)} to {getAirportLabel(query.destination)}
-          </h1>
-          <p className="mt-1 text-sm text-slate-600">
-            {query.date} · {query.passengers}{" "}
-            {query.passengers === 1 ? "passenger" : "passengers"}
-          </p>
-        </div>
-        <p className="rounded-full bg-slate-100 px-4 py-1.5 text-sm font-semibold text-slate-700">
-          {flights.length} {flights.length === 1 ? "flight" : "flights"} found
-        </p>
-      </div>
+      <SectionHeader
+        action={
+          <span className="rounded-full bg-slate-100 px-5 py-2.5 text-sm font-semibold text-slate-700">
+            {flights.length} {flights.length === 1 ? "flight" : "flights"}
+          </span>
+        }
+        description={`${query.date} · ${query.passengers} ${query.passengers === 1 ? "passenger" : "passengers"}`}
+        eyebrow="Search results"
+        title={`${getAirportLabel(query.origin)} to ${getAirportLabel(query.destination)}`}
+      />
 
       {flights.length === 0 ? (
-        <Card className="p-10 text-center">
-          <span className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-            <PlaneTakeoff aria-hidden="true" size={26} />
-          </span>
-          <h2 className="mt-4 text-lg font-semibold text-slate-950">
-            No flights for this route and date
-          </h2>
-          <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-600">
-            Try another date or route. Sample routes include DEL ↔ BOM, DEL ↔
-            BLR, and BLR ↔ HYD.
-          </p>
-          <Link
-            className="mt-6 inline-flex h-11 items-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white hover:bg-blue-700"
-            href="/"
-          >
-            Modify search
-          </Link>
+        <Card>
+          <CardBody className="text-center">
+            <span className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+              <PlaneTakeoff aria-hidden="true" size={28} />
+            </span>
+            <h2 className="mt-6 text-xl font-bold text-slate-950">
+              No flights for this route and date
+            </h2>
+            <p className="mx-auto mt-3 max-w-md text-base leading-relaxed text-slate-600">
+              Try another date or route. Sample routes include DEL ↔ BOM, DEL ↔
+              BLR, and BLR ↔ HYD.
+            </p>
+            <Link
+              className="mt-8 inline-flex min-h-12 items-center rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700"
+              href="/"
+            >
+              Modify search
+            </Link>
+          </CardBody>
         </Card>
       ) : (
-        <ul className="space-y-5">
+        <ul className="space-y-6">
           {flights.map((flight) => (
             <li key={flight.id}>
               <FlightCard flight={flight} passengers={query.passengers} />

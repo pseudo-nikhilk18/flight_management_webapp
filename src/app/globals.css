@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
+  --background: #f1f5f9;
   --foreground: #0f172a;
   --card: #ffffff;
   --muted: #64748b;
@@ -12,12 +12,28 @@
   --ring: rgba(37, 99, 235, 0.28);
   --hero-from: #0b1220;
   --hero-to: #172554;
+  --page-x: 1rem;
+  --section-y: 2rem;
 }
 
-* {
+@media (min-width: 640px) {
+  :root {
+    --page-x: 1.5rem;
+    --section-y: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --page-x: 2rem;
+    --section-y: 3rem;
+  }
+}
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
-  padding: 0;
-  margin: 0;
 }
 
 html,
@@ -32,6 +48,8 @@ body {
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -41,6 +59,7 @@ input,
 select,
 textarea {
   font: inherit;
+  line-height: 1.5;
 }
 
 a {

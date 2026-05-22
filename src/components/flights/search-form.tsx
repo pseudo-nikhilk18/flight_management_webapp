@@ -26,7 +26,7 @@ export function SearchForm({ defaults }: SearchFormProps) {
   return (
     <form
       action="/results"
-      className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5"
+      className="grid gap-6 sm:grid-cols-2 xl:grid-cols-5"
       method="get"
     >
       <Field label="From" htmlFor="origin">
@@ -87,7 +87,7 @@ export function SearchForm({ defaults }: SearchFormProps) {
       </Field>
 
       <div className="flex items-end sm:col-span-2 xl:col-span-1">
-        <Button className="h-12 w-full gap-2" size="lg" type="submit">
+        <Button className="w-full gap-2.5" size="lg" type="submit">
           <Search aria-hidden="true" size={18} />
           Search flights
         </Button>
