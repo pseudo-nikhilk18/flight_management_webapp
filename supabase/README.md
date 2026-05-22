@@ -7,6 +7,7 @@ Database assets for the Flight Management assignment.
 | Path | Purpose |
 |------|---------|
 | `migrations/001_initial_schema.sql` | Tables, indexes, RLS, PNR trigger, `reserve_seat`, `cancel_booking`, Realtime |
+| `migrations/002_reschedule_booking.sql` | `reschedule_booking` RPC for same-route changes |
 | `seed/seed.sql` | 8 demo flights, full seat maps per flight |
 
 ## Apply migrations (Dashboard)

@@ -22,7 +22,10 @@ Flight Management System is a production-style web application built for the int
 - Supabase Auth (login, register, session middleware, protected routes)
 - Task 01: flight search, results, booking flow, seat selection, confirmation with PNR
 
-Next: Task 02 (interactive seat map + Realtime), Task 03 (reschedule/cancel), Task 04 (Zustand).
+- Task 02: interactive cabin seat map with Realtime
+- Task 03: reschedule and cancel with confirmation dialogs
+
+Next: Task 04 (Zustand), Task 05 (PWA bonus).
 
 ## Demo Test Account
 
