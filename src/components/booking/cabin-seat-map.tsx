@@ -5,6 +5,8 @@ import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { buildCabinZones } from "@/lib/flights/seat-layout";
 import { formatPrice } from "@/lib/flights/format";
+import { toStoredSeat } from "@/store/mappers";
+import { useFlightStore } from "@/store/use-flight-store";
 import { cn } from "@/lib/utils/cn";
 import type { Seat } from "@/types/database";
 
@@ -28,8 +30,13 @@ export function CabinSeatMap({
   name = "seatId",
 }: CabinSeatMapProps) {
   const [seats, setSeats] = useState(initialSeats);
-  const [selectedSeatId, setSelectedSeatId] = useState<string>("");
+  const selectedSeat = useFlightStore((state) => state.selectedSeat);
+  const optimisticSeatSelection = useFlightStore(
+    (state) => state.optimisticSeatSelection,
+  );
+  const selectSeat = useFlightStore((state) => state.selectSeat);
 
+  const selectedSeatId = selectedSeat?.id ?? "";
   const zones = useMemo(() => buildCabinZones(seats), [seats]);
 
   useEffect(() => {
@@ -53,8 +60,12 @@ export function CabinSeatMap({
             ),
           );
 
-          if (!updated.is_available && selectedSeatId === updated.id) {
-            setSelectedSeatId("");
+          if (
+            !updated.is_available &&
+            selectedSeatId === updated.id &&
+            !optimisticSeatSelection
+          ) {
+            selectSeat(null);
           }
         },
       )
@@ -63,14 +74,23 @@ export function CabinSeatMap({
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, [flightId, selectedSeatId]);
+  }, [
+    flightId,
+    optimisticSeatSelection,
+    selectSeat,
+    selectedSeatId,
+  ]);
 
   return (
     <div className="space-y-6">
-      <input name={name} type="hidden" value={selectedSeatId} />
+      <input name={name} required type="hidden" value={selectedSeatId} />
       {!selectedSeatId ? (
         <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           Tap an available seat to continue.
+        </p>
+      ) : optimisticSeatSelection ? (
+        <p className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+          Seat {selectedSeat?.seat_number} selected. Confirm booking to reserve it.
         </p>
       ) : null}
 
@@ -104,17 +124,6 @@ export function CabinSeatMap({
                 </span>
               </div>
 
-              <div className="mb-4 hidden items-center justify-center gap-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:flex">
-                {zone.columns.map((column, index) => (
-                  <div className="flex items-center gap-3" key={column}>
-                    <span className="w-11 text-center">{column}</span>
-                    {zone.aisleAfterIndex === index ? (
-                      <span className="w-8 text-center text-slate-300">||</span>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
-
               <div className="space-y-3">
                 {zone.rows.map((row) => (
                   <div
@@ -126,12 +135,21 @@ export function CabinSeatMap({
                     </span>
                     <div className="flex items-center gap-3">
                       {row.seats.map((seat, index) => (
-                        <div className="flex items-center gap-3" key={`${row.rowNumber}-${index}`}>
+                        <div
+                          className="flex items-center gap-3"
+                          key={`${row.rowNumber}-${index}`}
+                        >
                           {seat ? (
                             <SeatButton
                               basePrice={basePrice}
+                              isOptimistic={
+                                optimisticSeatSelection &&
+                                selectedSeatId === seat.id
+                              }
                               isSelected={selectedSeatId === seat.id}
-                              onSelect={() => setSelectedSeatId(seat.id)}
+                              onSelect={() => {
+                                selectSeat(toStoredSeat(seat), true);
+                              }}
                               seat={seat}
                             />
                           ) : (
@@ -175,14 +193,16 @@ function SeatButton({
   seat,
   basePrice,
   isSelected,
+  isOptimistic,
   onSelect,
 }: {
   seat: Seat;
   basePrice: number;
   isSelected: boolean;
+  isOptimistic: boolean;
   onSelect: () => void;
 }) {
-  const isAvailable = seat.is_available;
+  const isAvailable = seat.is_available || isOptimistic;
   const totalPrice = basePrice + Number(seat.extra_fee);
   const tooltip = `${seat.class} · ${seat.seat_number} · ${formatPrice(totalPrice)}`;
 

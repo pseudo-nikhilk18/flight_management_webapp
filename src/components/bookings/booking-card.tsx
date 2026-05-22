@@ -6,6 +6,7 @@ import { CalendarDays, Plane, RefreshCw, XCircle } from "lucide-react";
 
 import { cancelBookingAction } from "@/app/actions/manage-booking";
 import { ReschedulePanel } from "@/components/bookings/reschedule-panel";
+import { useFlightStore } from "@/store/use-flight-store";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardBody } from "@/components/ui/card";
@@ -59,6 +60,7 @@ function isWithinTwoHours(departsAt: string) {
 
 export function BookingCard({ booking }: BookingCardProps) {
   const router = useRouter();
+  const resetBookingProgress = useFlightStore((state) => state.resetBookingProgress);
   const [showReschedule, setShowReschedule] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -82,6 +84,7 @@ export function BookingCard({ booking }: BookingCardProps) {
       setError(null);
       setCancelOpen(false);
       setShowReschedule(false);
+      resetBookingProgress();
       router.refresh();
     });
   }

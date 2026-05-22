@@ -1,8 +1,12 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Field, fieldControlClassName } from "@/components/ui/field";
 import { airports } from "@/lib/flights/constants";
+import { useFlightStore } from "@/store/use-flight-store";
 
 type SearchFormProps = {
   defaults?: {
@@ -18,16 +22,44 @@ function todayIso() {
 }
 
 export function SearchForm({ defaults }: SearchFormProps) {
-  const origin = defaults?.origin ?? "DEL";
-  const destination = defaults?.destination ?? "BOM";
-  const date = defaults?.date ?? todayIso();
-  const passengers = defaults?.passengers ?? 1;
+  const router = useRouter();
+  const searchQuery = useFlightStore((state) => state.searchQuery);
+  const setSearchQuery = useFlightStore((state) => state.setSearchQuery);
+  const setBookingStep = useFlightStore((state) => state.setBookingStep);
+
+  const origin = defaults?.origin ?? searchQuery.origin;
+  const destination = defaults?.destination ?? searchQuery.destination;
+  const date = defaults?.date ?? searchQuery.date;
+  const passengers = defaults?.passengers ?? searchQuery.passengers;
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+
+    const query = {
+      origin: formData.get("origin")?.toString() ?? origin,
+      destination: formData.get("destination")?.toString() ?? destination,
+      date: formData.get("date")?.toString() ?? date,
+      passengers: Number(formData.get("passengers") ?? passengers),
+    };
+
+    setSearchQuery(query);
+    setBookingStep("results");
+
+    const params = new URLSearchParams({
+      origin: query.origin,
+      destination: query.destination,
+      date: query.date,
+      passengers: String(query.passengers),
+    });
+
+    router.push(`/results?${params.toString()}`);
+  }
 
   return (
     <form
-      action="/results"
       className="grid gap-6 sm:grid-cols-2 xl:grid-cols-5"
-      method="get"
+      onSubmit={handleSubmit}
     >
       <Field label="From" htmlFor="origin">
         <select

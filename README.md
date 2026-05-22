@@ -25,7 +25,28 @@ Flight Management System is a production-style web application built for the int
 - Task 02: interactive cabin seat map with Realtime
 - Task 03: reschedule and cancel with confirmation dialogs
 
-Next: Task 04 (Zustand), Task 05 (PWA bonus).
+- Task 04: Zustand stores with persist and partialize (passport excluded)
+
+Next: Task 05 (PWA bonus), deployment polish.
+
+## Zustand Store Structure
+
+### `useFlightStore` (`src/store/use-flight-store.ts`)
+
+Persists in-progress booking flow to `localStorage`:
+
+- `searchQuery` — origin, destination, date, passengers
+- `selectedFlight`, `selectedSeat`, `bookingStep`
+- `passengerForm` — **partialize excludes `passportNo`**
+- Optimistic seat selection before server confirmation
+- `resetBookingProgress()` on cancel / after confirmation
+- `reset()` on sign out
+
+### `useUserStore` (`src/store/use-user-store.ts`)
+
+- Persists **only** `sessionToken` (access token)
+- Keeps `cachedBookings` and `userEmail` in memory for the session
+- `reset()` on sign out
 
 ## Demo Test Account
 

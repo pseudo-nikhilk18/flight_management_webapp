@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
 import { BookingForm } from "@/components/booking/booking-form";
+import { BookingResumeNotice } from "@/components/booking/booking-resume-notice";
+import { BookingStoreSync } from "@/components/booking/booking-store-sync";
 import { AppHeader } from "@/components/app-header";
 import { Card, CardBody } from "@/components/ui/card";
 import { requireUser } from "@/lib/auth/session";
@@ -103,6 +105,8 @@ export default async function BookPage({ params, searchParams }: BookPageProps) 
 
         <section className="py-10 sm:py-12">
           <PageContainer>
+            <BookingStoreSync flight={flight} passengers={passengers} />
+            <BookingResumeNotice flightId={flight.id} />
             <BookingForm flight={flight} passengers={passengers} seats={seats} />
           </PageContainer>
         </section>

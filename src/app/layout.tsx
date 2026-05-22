@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+import { StoreBootstrap } from "@/components/providers/store-bootstrap";
 import { appDescription, appName } from "@/lib/app-config";
 import "./globals.css";
 
@@ -15,6 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased">
       <body className="flex min-h-full flex-col bg-[var(--background)] text-[var(--foreground)]">
+        <StoreBootstrap />
         {children}
       </body>
     </html>

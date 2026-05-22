@@ -1,5 +1,6 @@
-import Link from "next/link";
-import { ArrowRight, Clock, Plane } from "lucide-react";
+import { Clock, Plane } from "lucide-react";
+
+import { SelectFlightButton } from "@/components/flights/select-flight-button";
 
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -25,8 +26,6 @@ const classLabels = {
 } as const;
 
 export function FlightCard({ flight, passengers }: FlightCardProps) {
-  const bookHref = `/book/${flight.id}?passengers=${passengers}`;
-
   return (
     <Card className="group transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_50px_rgba(15,23,42,0.12)]">
       <div className="grid lg:grid-cols-[1fr_15rem]">
@@ -105,13 +104,7 @@ export function FlightCard({ flight, passengers }: FlightCardProps) {
             <p className="text-sm text-slate-500">per passenger</p>
           </div>
 
-          <Link
-            className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold leading-none text-white shadow-[0_10px_24px_rgba(37,99,235,0.32)] transition-all hover:bg-blue-700"
-            href={bookHref}
-          >
-            Select flight
-            <ArrowRight aria-hidden="true" size={16} />
-          </Link>
+          <SelectFlightButton flight={flight} passengers={passengers} />
         </div>
       </div>
     </Card>

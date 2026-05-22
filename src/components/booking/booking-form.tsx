@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useActionState } from "react";
 
 import {
@@ -11,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { Field, fieldControlClassName } from "@/components/ui/field";
 import { formatPrice } from "@/lib/flights/format";
+import { useFlightStore } from "@/store/use-flight-store";
 import type { Flight, Seat } from "@/types/database";
 
 type BookingFormProps = {
@@ -27,7 +29,18 @@ export function BookingForm({ flight, seats, passengers }: BookingFormProps) {
     initialState,
   );
 
+  const passengerForm = useFlightStore((store) => store.passengerForm);
+  const setPassengerField = useFlightStore((store) => store.setPassengerField);
+  const selectedSeat = useFlightStore((store) => store.selectedSeat);
+  const clearOptimisticSeat = useFlightStore((store) => store.clearOptimisticSeat);
+
   const hasAvailableSeat = seats.some((seat) => seat.is_available);
+
+  useEffect(() => {
+    if (state?.error) {
+      clearOptimisticSeat();
+    }
+  }, [clearOptimisticSeat, state?.error]);
 
   return (
     <form action={formAction} className="space-y-8">
@@ -38,7 +51,8 @@ export function BookingForm({ flight, seats, passengers }: BookingFormProps) {
         <CardHeader>
           <h2 className="text-xl font-bold text-slate-950">Passenger details</h2>
           <p className="mt-2 text-sm leading-relaxed text-slate-600">
-            Enter information exactly as printed on the passport.
+            Enter information exactly as printed on the passport. Passport data
+            stays in memory only and is not saved to local storage.
           </p>
         </CardHeader>
         <CardBody className="pt-0">
@@ -48,20 +62,29 @@ export function BookingForm({ flight, seats, passengers }: BookingFormProps) {
                 className={fieldControlClassName}
                 id="fullName"
                 name="fullName"
+                onChange={(event) =>
+                  setPassengerField("fullName", event.target.value)
+                }
                 placeholder="Alex Johnson"
                 required
                 type="text"
+                value={passengerForm.fullName}
               />
             </Field>
 
             <Field htmlFor="passportNo" label="Passport number">
               <input
+                autoComplete="off"
                 className={fieldControlClassName}
                 id="passportNo"
                 name="passportNo"
+                onChange={(event) =>
+                  setPassengerField("passportNo", event.target.value)
+                }
                 placeholder="P1234567"
                 required
                 type="text"
+                value={passengerForm.passportNo}
               />
             </Field>
 
@@ -70,9 +93,13 @@ export function BookingForm({ flight, seats, passengers }: BookingFormProps) {
                 className={fieldControlClassName}
                 id="nationality"
                 name="nationality"
+                onChange={(event) =>
+                  setPassengerField("nationality", event.target.value)
+                }
                 placeholder="Indian"
                 required
                 type="text"
+                value={passengerForm.nationality}
               />
             </Field>
 
@@ -81,8 +108,10 @@ export function BookingForm({ flight, seats, passengers }: BookingFormProps) {
                 className={fieldControlClassName}
                 id="dob"
                 name="dob"
+                onChange={(event) => setPassengerField("dob", event.target.value)}
                 required
                 type="date"
+                value={passengerForm.dob}
               />
             </Field>
           </div>
@@ -99,6 +128,7 @@ export function BookingForm({ flight, seats, passengers }: BookingFormProps) {
         <CardBody className="pt-0">
           {hasAvailableSeat ? (
             <CabinSeatMap
+              key={flight.id}
               basePrice={Number(flight.base_price)}
               flightId={flight.id}
               initialSeats={seats}
@@ -130,10 +160,18 @@ export function BookingForm({ flight, seats, passengers }: BookingFormProps) {
                 per passenger
               </span>
             </p>
+            {selectedSeat ? (
+              <p className="text-sm text-slate-600">
+                Seat {selectedSeat.seat_number} ·{" "}
+                {formatPrice(
+                  Number(flight.base_price) + Number(selectedSeat.extra_fee),
+                )}
+              </p>
+            ) : null}
           </div>
           <Button
             className="w-full sm:min-w-[220px]"
-            disabled={isPending || !hasAvailableSeat}
+            disabled={isPending || !hasAvailableSeat || !selectedSeat}
             size="lg"
             type="submit"
           >

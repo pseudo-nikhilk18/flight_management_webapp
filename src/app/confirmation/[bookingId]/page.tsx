@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CheckCircle2, Ticket } from "lucide-react";
 
+import { BookingProgressReset } from "@/components/booking/booking-progress-reset";
 import { AppHeader } from "@/components/app-header";
 import { PageContainer } from "@/components/layout/page-container";
 import { Badge } from "@/components/ui/badge";
@@ -96,6 +97,7 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
 
   return (
     <>
+      <BookingProgressReset />
       <AppHeader />
       <main className="flex-1 pb-20">
         <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 py-14 text-white sm:py-16">
