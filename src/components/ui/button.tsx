@@ -12,9 +12,9 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-teal-700 text-white shadow-sm hover:bg-teal-800 disabled:bg-teal-700/70",
+    "bg-blue-600 text-white shadow-[0_8px_20px_rgba(37,99,235,0.35)] hover:bg-blue-700 disabled:bg-blue-400",
   secondary:
-    "border border-slate-200 bg-white text-slate-800 hover:bg-slate-50 disabled:bg-slate-100",
+    "border border-slate-200 bg-white text-slate-800 hover:border-slate-300 hover:bg-slate-50 disabled:bg-slate-100",
   ghost: "text-slate-700 hover:bg-slate-100",
 };
 
@@ -34,7 +34,7 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center rounded-lg font-semibold transition-colors disabled:cursor-not-allowed",
+        "inline-flex items-center justify-center rounded-xl font-semibold transition-all disabled:cursor-not-allowed",
         variantClasses[variant],
         sizeClasses[size],
         className,

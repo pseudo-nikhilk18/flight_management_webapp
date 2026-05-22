@@ -19,9 +19,10 @@ Flight Management System is a production-style web application built for the int
 - Database migration SQL (`supabase/migrations/001_initial_schema.sql`)
 - Seed SQL (`supabase/seed/seed.sql`) — apply in Supabase after migration
 
-- Supabase Auth (login, register, session middleware, protected `/bookings`)
+- Supabase Auth (login, register, session middleware, protected routes)
+- Task 01: flight search, results, booking flow, seat selection, confirmation with PNR
 
-Next: Task 01 (search and booking flow).
+Next: Task 02 (interactive seat map + Realtime), Task 03 (reschedule/cancel), Task 04 (Zustand).
 
 ## Demo Test Account
 

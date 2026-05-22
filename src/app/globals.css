@@ -1,14 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f4f7fb;
+  --background: #f8fafc;
   --foreground: #0f172a;
   --card: #ffffff;
   --muted: #64748b;
   --border: #e2e8f0;
-  --primary: #0f766e;
-  --primary-hover: #0d5f59;
-  --ring: rgba(15, 118, 110, 0.35);
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --accent: #0ea5e9;
+  --ring: rgba(37, 99, 235, 0.28);
+  --hero-from: #0b1220;
+  --hero-to: #172554;
 }
 
 * {

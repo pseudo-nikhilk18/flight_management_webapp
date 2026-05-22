@@ -85,7 +85,7 @@ export default async function BookingsPage() {
 
           {rows.length === 0 ? (
             <section className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center shadow-sm sm:p-12">
-              <span className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-teal-50 text-teal-700">
+              <span className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
                 <Ticket aria-hidden="true" size={28} />
               </span>
               <h2 className="mt-4 text-lg font-semibold text-slate-950">
@@ -96,7 +96,7 @@ export default async function BookingsPage() {
                 appear here.
               </p>
               <Link
-                className="mt-6 inline-flex h-11 items-center rounded-lg bg-teal-700 px-5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-teal-800"
+                className="mt-6 inline-flex h-11 items-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
                 href="/"
               >
                 Find flights
@@ -109,7 +109,7 @@ export default async function BookingsPage() {
 
                 return (
                   <li
-                    className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6"
+                    className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(15,23,42,0.1)] sm:p-6"
                     key={booking.id}
                   >
                     <div className="flex flex-wrap items-start justify-between gap-3">
@@ -130,13 +130,13 @@ export default async function BookingsPage() {
 
                     <div className="mt-4 grid gap-3 text-sm text-slate-600 sm:grid-cols-3">
                       <div className="flex items-center gap-2">
-                        <Plane aria-hidden="true" className="text-teal-700" size={16} />
+                        <Plane aria-hidden="true" className="text-blue-600" size={16} />
                         <span>{flight?.flight_no ?? "—"}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <CalendarDays
                           aria-hidden="true"
-                          className="text-teal-700"
+                          className="text-blue-600"
                           size={16}
                         />
                         <span>
