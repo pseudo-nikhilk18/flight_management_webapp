@@ -1,11 +1,8 @@
-import Link from "next/link";
-import { Ticket } from "lucide-react";
-
-import { BookingCard, type BookingCardData } from "@/components/bookings/booking-card";
+import { BookingsList } from "@/components/bookings/bookings-list";
+import type { BookingCardData } from "@/components/bookings/booking-card";
 import { AppHeader } from "@/components/app-header";
 import { PageContainer } from "@/components/layout/page-container";
 import { SectionHeader } from "@/components/layout/section-header";
-import { Card, CardBody } from "@/components/ui/card";
 import { requireUser } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 
@@ -84,34 +81,7 @@ export default async function BookingsPage() {
             title="My Bookings"
           />
 
-          {cards.length === 0 ? (
-            <Card>
-              <CardBody className="text-center">
-                <span className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-                  <Ticket aria-hidden="true" size={28} />
-                </span>
-                <h2 className="mt-6 text-xl font-bold text-slate-950">No bookings yet</h2>
-                <p className="mx-auto mt-3 max-w-sm text-base leading-relaxed text-slate-600">
-                  When you book a flight, your confirmations and PNR details will
-                  appear here.
-                </p>
-                <Link
-                  className="mt-8 inline-flex min-h-12 items-center rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700"
-                  href="/"
-                >
-                  Find flights
-                </Link>
-              </CardBody>
-            </Card>
-          ) : (
-            <ul className="space-y-6">
-              {cards.map((booking) => (
-                <li key={booking.id}>
-                  <BookingCard booking={booking} />
-                </li>
-              ))}
-            </ul>
-          )}
+          <BookingsList bookings={cards} />
         </PageContainer>
       </main>
     </>

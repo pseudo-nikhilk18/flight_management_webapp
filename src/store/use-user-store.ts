@@ -45,12 +45,12 @@ export const useUserStore = create<UserStore>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         sessionToken: state.sessionToken,
+        cachedBookings: state.cachedBookings,
+        userEmail: state.userEmail,
       }),
       merge: (persisted, current) => ({
         ...current,
         ...(persisted as Partial<UserStoreState>),
-        cachedBookings: current.cachedBookings,
-        userEmail: current.userEmail,
       }),
     },
   ),
