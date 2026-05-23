@@ -10,21 +10,21 @@ import { getSessionUser } from "@/lib/auth/session";
 const highlights = [
   {
     icon: Timer,
-    title: "Fast route discovery",
+    title: "Search flights",
     description:
-      "Compare departures across major routes with clear timings, cabin fares, and aircraft details.",
+      "Filter by origin, destination, travel date, and number of passengers.",
   },
   {
     icon: CalendarCheck,
-    title: "Live seat maps",
+    title: "Select a seat",
     description:
-      "Choose your seat from an interactive cabin layout that updates as availability changes.",
+      "View cabin availability and reserve a seat when you book.",
   },
   {
     icon: Shield,
-    title: "Secure itineraries",
+    title: "Manage bookings",
     description:
-      "Bookings stay tied to your account with protected passenger and payment details.",
+      "View PNR details, reschedule, or cancel from your account.",
   },
 ];
 
@@ -45,11 +45,12 @@ export default async function HomePage() {
               Premium flight booking
             </p>
             <h1 className="mt-6 max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-              A modern way to search, select seats, and fly.
+              Find your flight. Choose your seat. Fly prepared.
             </h1>
-            <p className="mt-5 max-w-2xl text-base leading-relaxed text-blue-100/95 sm:text-lg">
-              Built for clarity on every screen — generous spacing, live availability,
-              and a booking flow that feels like leading travel apps.
+            <p className="mt-5 max-w-2xl text-lg font-medium leading-relaxed text-blue-50/95 sm:text-xl">
+              Seats don&apos;t wait. Neither should you.
+              <br />
+              Book fast, fly confident, stay in control.
             </p>
           </PageContainer>
         </section>
