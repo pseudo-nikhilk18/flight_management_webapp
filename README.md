@@ -1,6 +1,6 @@
 # Flight Management System
 
-A responsive, production-style flight booking web application where passengers search scheduled flights, reserve seats on a live cabin map, manage itineraries, and install the experience as a Progressive Web App. The frontend is a Next.js App Router application; persistence, authentication, row-level security, and atomic booking operations live in Supabase (PostgreSQL).
+A responsive flight booking web application where passengers search scheduled flights, reserve seats on a live cabin map, manage itineraries, and install the experience as a Progressive Web App. The frontend is a Next.js App Router application; persistence, authentication, row-level security, and atomic booking operations live in Supabase (PostgreSQL).
 
 ---
 
@@ -8,7 +8,7 @@ A responsive, production-style flight booking web application where passengers s
 
 | Environment | URL |
 |-------------|-----|
-| Production (Vercel) | _Add your deployed URL after `vercel deploy`_ |
+| Production (Vercel) | [https://flightmanagementwebapp.vercel.app/](https://flightmanagementwebapp.vercel.app/) |
 | Local development | [http://localhost:3000](http://localhost:3000) |
 
 ---
@@ -43,9 +43,6 @@ Passengers can:
 | Icons | lucide-react | — |
 | PWA | `@ducanh2912/next-pwa` (maintained **next-pwa** fork, Workbox) | 10.x |
 
-The project satisfies the assignment requirement for **Next.js 14+**; Next.js 16 is used intentionally and follows the local framework documentation in `node_modules/next/dist/docs/`.
-
----
 
 ## Repository layout
 
@@ -53,7 +50,7 @@ The project satisfies the assignment requirement for **Next.js 14+**; Next.js 16
 flight_management_web_app/
 ├── public/
 │   ├── icons/                 # PWA icons (192×192, 512×512)
-│   └── screenshots/           # Add lighthouse-pwa.png here
+│   └── screenshots/lighthouse-pwa.png
 ├── src/
 │   ├── app/                   # App Router pages & server actions
 │   │   ├── page.tsx           # Home + flight search
@@ -104,7 +101,7 @@ Protected prefixes are enforced in `middleware.ts` and again in server pages via
 ### 1. Clone and install
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/pseudo-nikhilk18/flight_management_webapp
 cd flight_management_web_app
 npm install
 ```
@@ -154,10 +151,10 @@ npm run generate:icons
 ### 6. Run
 
 ```bash
-npm run dev
+npm run dev -- --webpack
 ```
 
-Open [http://localhost:3000](http://localhost:3000). PWA service worker is **disabled in development**; test install/offline with a production build:
+Open [http://localhost:3000](http://localhost:3000). Next.js 16 defaults to Turbopack for `next dev`, which conflicts with the PWA webpack plugin—use `--webpack` as shown. PWA service worker is **disabled in development**; test install/offline with a production build:
 
 ```bash
 npm run build && npm run start
@@ -167,7 +164,7 @@ npm run build && npm run start
 
 | Command | Purpose |
 |---------|---------|
-| `npm run dev` | Development server |
+| `npm run dev -- --webpack` | Development server |
 | `npm run build` | Production build with webpack (PWA plugin; generates service worker) |
 | `npm run start` | Serve production build |
 | `npm run lint` | ESLint |
@@ -326,11 +323,11 @@ Implemented with **`@ducanh2912/next-pwa`** (actively maintained successor to `n
 
 ### Lighthouse
 
-After deploying, run Chrome Lighthouse → **Progressive Web App** on the production URL. Save screenshot as:
+Progressive Web App audit on [https://flightmanagementwebapp.vercel.app/](https://flightmanagementwebapp.vercel.app/):
 
-`public/screenshots/lighthouse-pwa.png`
+![Lighthouse PWA audit](./public/screenshots/lighthouse-pwa.png)
 
-Target score: **≥ 90** (assignment bonus criterion).
+**Screenshot path:** `public/screenshots/lighthouse-pwa.png`
 
 ---
 
@@ -367,17 +364,9 @@ sequenceDiagram
 
 ---
 
-## Deployment (Vercel)
 
-1. Push repository to GitHub.
-2. Import project in Vercel; framework preset **Next.js**.
-3. Set environment variables (same as `.env.example`, with production URL for `NEXT_PUBLIC_SITE_URL`).
-4. Deploy; run Supabase migrations against the production project if separate.
-5. Add production URL to this README and submission form.
 
----
-
-## Evaluation notes (how requirements are met)
+## Implementation summary
 
 | Requirement | Implementation |
 |-------------|----------------|
@@ -394,6 +383,23 @@ sequenceDiagram
 
 ---
 
+## Design trade-offs
+
+This section documents deliberate limits and what would change with more time—per the assignment brief on honest communication.
+
+| Area | Current choice | If extended |
+|------|----------------|-------------|
+| **Bundlers (dev)** | `npm run dev -- --webpack` because the PWA plugin hooks webpack; Next.js 16 defaults to Turbopack | Adopt a Turbopack-native PWA path, or disable PWA wrapping in dev so `next dev` works without flags |
+| **Offline / PWA** | Cached results pages and a My Bookings snapshot; service worker off in dev | True offline booking would need queued writes and conflict resolution—not attempted; seat locks must stay server-authoritative |
+| **Business rules** | Enforced in Postgres RPCs + RLS, not only the UI | Keeps correctness under concurrent booking; trade-off is more SQL to maintain vs. trusting client-only checks |
+| **Passenger persist** | Passport excluded from `localStorage` via Zustand `partialize` | Safer for shared devices; trade-off is re-entry after refresh mid-booking |
+| **Passenger count** | Search supports 1–6 passengers; each booking stores one passenger row | Multi-passenger single itinerary would need schema/UI for multiple `passengers` per `booking_id` |
+| **Demo data** | Seed flights use relative `now()` dates | Empty search results outside that window unless seed is re-run or dates are updated |
+| **Payments** | Fares stored on booking; no payment gateway | Matches assignment scope; production would add PCI-compliant checkout |
+| **Automated tests** | Manual + production Lighthouse; no Playwright/Cypress suite | E2E against Supabase test project would cover login → book → cancel paths regressions |
+
+---
+
 ## Troubleshooting
 
 | Issue | Likely fix |
@@ -401,6 +407,7 @@ sequenceDiagram
 | No flights in search | Use departure date 2–6 days ahead (seed uses relative dates) |
 | `reserve_seat` fails | Seat taken concurrently; pick another seat |
 | Cancel blocked | Within 2 hours of `departs_at` by design |
+| `npm run dev` fails (Turbopack/webpack) | Use `npm run dev -- --webpack` |
 | PWA not installing locally | Run `npm run build && npm run start`, not `dev` |
 | Realtime not updating | Confirm `seats` in Supabase → Database → Replication |
 
